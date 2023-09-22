@@ -15,6 +15,11 @@ void gaussianElimination(double A[N][2 * N])
         while (A[p][i] == 0)
         {
             p++; // Move to the next row if pivot is zero
+            if (p == N)
+            {
+                printf("No unique solution exists\n");
+                return;
+            }
         }
 
         // Step 3: Swap rows if necessary
@@ -28,41 +33,36 @@ void gaussianElimination(double A[N][2 * N])
             }
         }
 
-        if (A[i][i] == 0)
+        // Step 4: Perform elimination for each row below i
+        for (j = 0; j < N; j++)
         {
-            printf("No unique solution exists\n");
-            return;
+            if (j != i)
+            {
+                double m = A[j][i] / A[i][i];
+                for (k = i; k < 2 * N; k++)
+                {
+                    A[j][k] -= m * A[i][k];
+                }
+            }
         }
+    }
 
-        // Step 4: Scale the pivot row
+    // Normalize the rows(make the diagonal 1) to get the inverse matrix
+    for (i = 0; i < N; i++)
+    {
         double pivot = A[i][i];
         for (j = 0; j < 2 * N; j++)
         {
             A[i][j] /= pivot;
         }
-
-        // Step 5: Eliminate non-zero entries below the pivot
-        for (j = 0; j < N; j++)
-        {
-            if (j != i)
-            {
-                double factor = A[j][i];
-                for (k = 0; k < 2 * N; k++)
-                {
-                    A[j][k] -= factor * A[i][k];
-                }
-            }
-        }
     }
 }
-
 int main()
 {
     double A[N][N] = {
         {4, 1, 1},
         {2, 5, 2},
-        {1, 2, 4}
-    };
+        {1, 2, 4}};
     double operationalMat[N][2 * N];
 
     // Initialize operationalMat with the original matrix A augmented with the identity matrix
@@ -85,16 +85,14 @@ int main()
         }
     }
 
-    // Perform Gaussian elimination to find the inverse
     gaussianElimination(operationalMat);
 
-    // Print the inverse matrix
     printf("Inverse matrix:\n");
     for (int i = 0; i < N; i++)
     {
         for (int j = N; j < 2 * N; j++)
         {
-            printf("%0.2lf  ", operationalMat[i][j]);
+            printf("%0.2lf   ", operationalMat[i][j]);
         }
         printf("\n");
     }

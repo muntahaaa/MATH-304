@@ -1,3 +1,8 @@
+//Gauss Elimination
+//Determinant
+//Root finding
+//Inverted Mat
+
 #include <stdio.h>
 #define N 3
 void initializa(int matrix[N][N + 1], double mat[N][2 * N + 1])
